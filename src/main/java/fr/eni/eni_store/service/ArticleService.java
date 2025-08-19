@@ -2,6 +2,7 @@ package fr.eni.eni_store.service;
 
 import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.dao.ArticleDAO;
+import fr.eni.eni_store.dao.DAOSaveResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,12 +46,14 @@ public class ArticleService {
     }
 
     public ServiceResponse<Article> save(Article article){
-        // TODO
-        // J'ai deux DAO (Une pour create/update)
 
-        // ON FAIT: J'ai une seule DAO (qui fait create ou update selon l'id)
-        Article savedArticle = articleDAO.save(article);
+        // J'ai une seule DAO (qui fait create ou update selon l'id)
+        DAOSaveResult<Article> daoSaveResult = articleDAO.save(article);
 
-        return ServiceHelper.buildResponse("202", savedArticle);
+        if (daoSaveResult.isCreated){
+            return ServiceHelper.buildResponse("202", daoSaveResult.data);
+        }
+
+        return ServiceHelper.buildResponse("203", daoSaveResult.data);
     }
 }

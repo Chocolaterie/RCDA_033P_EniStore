@@ -39,7 +39,10 @@ public class ArticleDAO {
         return DB_Articles.removeIf(article -> article.id == id);
     }
 
-    public Article save(Article article){
+    public DAOSaveResult<Article> save(Article article){
+
+        DAOSaveResult<Article> result = new DAOSaveResult<>();
+
         // sinon mettre à jour
         // -- Si article existe ne base alors le modifier
         Optional<Article> foundArticle = DB_Articles.stream().filter(value -> value.id == article.id).findFirst();
@@ -47,7 +50,11 @@ public class ArticleDAO {
         // si existe -> alors je le modifie
         if (foundArticle.isPresent()){
             foundArticle.get().title = article.title;
-            return foundArticle.get();
+
+            result.isCreated = false;
+            result.data = foundArticle.get();
+
+            return result;
         }
 
         // Si id == null
@@ -56,7 +63,10 @@ public class ArticleDAO {
         // Je ajoute l'article dans le tableau
         DB_Articles.add(article);
 
-        return article;
+        result.isCreated = true;
+        result.data = article;
+
+        return result;
 
     }
 }

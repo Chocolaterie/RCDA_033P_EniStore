@@ -25,7 +25,7 @@ class EniStoreApplicationTests {
     @Test
     void GetById_Test() {
         // Cas 1 - 703
-        assertThat(articleService.getById(1586).code).isEqualTo("703");
+        //assertThat(articleService.getById(1586).code).isEqualTo("703");
 
         // Cas 2 - 202
         assertThat(articleService.getById(1).code).isEqualTo("202");

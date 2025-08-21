@@ -10,8 +10,11 @@ import java.util.Locale;
 @Component
 public class LocaleHelper {
 
-    @Autowired
-    MessageSource messageSource;
+    private final MessageSource messageSource;
+
+    public LocaleHelper(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     public String i18n(String key){
 

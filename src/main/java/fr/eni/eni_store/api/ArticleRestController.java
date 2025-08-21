@@ -4,7 +4,6 @@ import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.service.ArticleService;
 import fr.eni.eni_store.service.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/api/articles")
 public class ArticleRestController {
 
-    @Autowired
-    ArticleService articleService;
+    private final ArticleService articleService;
+
+    public ArticleRestController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @Operation(summary = "Endpoint pour récupérer tout les articles")
     @GetMapping("all")
@@ -25,14 +27,14 @@ public class ArticleRestController {
 
     @Operation(summary = "Endpoint pour récupérer un article")
     @GetMapping("get/{id}")
-    public ServiceResponse<Article> getById(@PathVariable Integer id){
+    public ServiceResponse<Article> getById(@PathVariable String id){
 
         return articleService.getById(id);
     }
 
     @Operation(summary = "Endpoint pour supprimer un article")
     @DeleteMapping("{id}")
-    public ServiceResponse<Article> deleteById(@PathVariable Integer id){
+    public ServiceResponse<Article> deleteById(@PathVariable String id){
 
         return articleService.deleteById(id);
     }

@@ -1,23 +1,27 @@
-package fr.eni.eni_store.dao;
+package fr.eni.eni_store.dao.mock;
 
 import fr.eni.eni_store.bo.Article;
+import fr.eni.eni_store.dao.DAOSaveResult;
+import fr.eni.eni_store.dao.IDAOArticle;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Profile("mock")
 @Component
-public class ArticleDAO {
+public class ArticleDAOMock implements IDAOArticle {
 
     List<Article> DB_Articles;
 
-    public ArticleDAO(){
+    public ArticleDAOMock(){
         DB_Articles = new ArrayList<>();
 
         for (int i = 0; i < 3; i++){
 
-            Article p = new Article((i+1), String.format("Article %d", i));
+            Article p = new Article(Integer.toString(i+1), String.format("Article %d", i));
 
             DB_Articles.add(p);
         }
@@ -27,14 +31,14 @@ public class ArticleDAO {
         return DB_Articles;
     }
 
-    public Article selectById(int id){
+    public Article selectById(String id){
 
         Optional<Article> foundArticle = DB_Articles.stream().filter(article -> article.id == id).findFirst();
 
         return foundArticle.orElse(null);
     }
 
-    public boolean deleteById(int id){
+    public boolean deleteById(String id){
 
         return DB_Articles.removeIf(article -> article.id == id);
     }
@@ -59,7 +63,7 @@ public class ArticleDAO {
 
         // Si id == null
         // générer un faux id
-        article.id = DB_Articles.size() + 100;
+        article.id = Integer.toString(DB_Articles.size() + 100);
         // Je ajoute l'article dans le tableau
         DB_Articles.add(article);
 
@@ -67,6 +71,5 @@ public class ArticleDAO {
         result.data = article;
 
         return result;
-
     }
 }

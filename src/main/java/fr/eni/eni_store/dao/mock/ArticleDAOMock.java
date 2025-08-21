@@ -33,14 +33,14 @@ public class ArticleDAOMock implements IDAOArticle {
 
     public Article selectById(String id){
 
-        Optional<Article> foundArticle = DB_Articles.stream().filter(article -> article.id == id).findFirst();
+        Optional<Article> foundArticle = DB_Articles.stream().filter(article -> article.id.equals(id)).findFirst();
 
         return foundArticle.orElse(null);
     }
 
     public boolean deleteById(String id){
 
-        return DB_Articles.removeIf(article -> article.id == id);
+        return DB_Articles.removeIf(article -> article.id.equals(id));
     }
 
     public DAOSaveResult<Article> save(Article article){
@@ -49,7 +49,7 @@ public class ArticleDAOMock implements IDAOArticle {
 
         // sinon mettre à jour
         // -- Si article existe ne base alors le modifier
-        Optional<Article> foundArticle = DB_Articles.stream().filter(value -> value.id == article.id).findFirst();
+        Optional<Article> foundArticle = DB_Articles.stream().filter(value -> value.id.equals(article.id)).findFirst();
 
         // si existe -> alors je le modifie
         if (foundArticle.isPresent()){

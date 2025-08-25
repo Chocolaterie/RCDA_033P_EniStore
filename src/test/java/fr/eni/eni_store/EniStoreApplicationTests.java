@@ -2,6 +2,8 @@ package fr.eni.eni_store;
 
 import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.service.ArticleService;
+import fr.eni.eni_store.service.AuthService;
+import fr.eni.eni_store.service.dto.LoginRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +17,9 @@ class EniStoreApplicationTests {
 
     @Autowired
     ArticleService articleService;
+
+    @Autowired
+    AuthService authService;
 
 	@Test
 	void contextLoads() {
@@ -54,6 +59,22 @@ class EniStoreApplicationTests {
         foundArticle.title = "Nouveau titre";
 
         assertThat(articleService.save(foundArticle).code).isEqualTo("203");
+    }
+
+    @Test
+    void Auth_Login_Test_200(){
+        LoginRequest loginRequest = new LoginRequest("test@gmail.com", "123456");
+        String code = authService.auth(loginRequest).code;
+
+        assertThat(code).isEqualTo("200");
+    }
+
+    @Test
+    void Auth_Login_Test_765(){
+        LoginRequest loginRequest = new LoginRequest("test1515@gmail.com", "1234568");
+        String code = authService.auth(loginRequest).code;
+
+        assertThat(code).isEqualTo("765");
     }
 
 }

@@ -1,0 +1,64 @@
+name: Java CI/CD with Gradle
+
+on: 
+  push:
+    branches: 
+      - mock
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    # Dans le docker, installer/mettre à jour java 17
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Build with Gradle Wrapper
+      run: chmod +x ./gradlew; ./gradlew build
+
+    - name: Upload artifact (JAR file)
+      uses: actions/upload-artifact@v4
+      with:
+        name: eni-store
+        path: build/libs/eni-store-0.0.1-SNAPSHOT.jar
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      
+    steps:
+    
+    - name: Download artifact (JAR file)
+      uses: actions/download-artifact@v4
+      with:
+        name: eni-store  # Le nom de l'artefact que nous avons uploadé dans le job build
+        
+    - name: Publish to server
+      uses: appleboy/scp-action@master
+      with:
+        host: 165.232.147.139
+        username: root
+        password: chocolatine31
+        source: "/home/runner/work/RCDA_033P_EniStore/RCDA_033P_EniStore/eni-store-0.0.1-SNAPSHOT.jar"
+        target: /home/
+
+    - name: Restart app in server
+      uses: appleboy/ssh-action@master
+      with:
+        host: 165.232.147.139
+        username: root
+        password: chocolatine31
+        command_timeout: 30m
+        script: java -jar /home/eni-store-0.0.1-SNAPSHOT.jar

@@ -1,9 +1,6 @@
 name: Java CI/CD with Gradle
 
-on: 
-  push:
-    branches: 
-      - mock
+on: push
 
 jobs:
   build:

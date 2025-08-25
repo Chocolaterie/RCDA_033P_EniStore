@@ -6,5 +6,5 @@ public class AppUser {
 
     public String email;
     public String password;
-    
+
 }

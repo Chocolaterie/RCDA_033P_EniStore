@@ -1,5 +1,8 @@
 package fr.eni.eni_store.service.dto;
 
+/**
+ * Classe qui sert de DTO/Pojo pour contenir les identifiants d'authentification
+ */
 public class LoginRequest {
 
     public String email;

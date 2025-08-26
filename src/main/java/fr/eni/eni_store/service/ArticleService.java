@@ -24,6 +24,10 @@ public class ArticleService {
         this.localeHelper = localeHelper;
     }
 
+    /**
+     * Fonctionnalité pour récupérer tout les articles
+     * @return 202 : Succès
+     */
     public ServiceResponse<List<Article>> getAll(){
         // Cas 1
         return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_GetAll_202"), articleDAO.selectAll());

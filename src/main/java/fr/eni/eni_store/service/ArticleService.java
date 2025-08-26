@@ -1,11 +1,9 @@
 package fr.eni.eni_store.service;
 
 import fr.eni.eni_store.bo.Article;
-import fr.eni.eni_store.dao.IDAOArticle;
-import fr.eni.eni_store.dao.mock.ArticleDAOMock;
 import fr.eni.eni_store.dao.DAOSaveResult;
+import fr.eni.eni_store.dao.IDAOArticle;
 import fr.eni.eni_store.locale.LocaleHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

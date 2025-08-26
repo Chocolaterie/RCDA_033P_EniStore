@@ -2,11 +2,15 @@ package fr.eni.eni_store.service;
 
 import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.locale.LocaleHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class ServiceHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServiceHelper.class);
 
     /**
      * Utilitaire pour centraliser la construction d'un service response
@@ -22,8 +26,9 @@ public class ServiceHelper {
         serviceResponse.message = message;
         serviceResponse.data = data;
 
-        // TODO : Logger la reponse (HOOK / AOP)
-        System.out.println(String.format("Service response : code=%s", code));
+        logger.info(String.format("Service response : code=%s | message=%s", code, message));
+        // Avant
+        //System.out.println(String.format("Service response : code=%s", code));
 
         return serviceResponse;
     }

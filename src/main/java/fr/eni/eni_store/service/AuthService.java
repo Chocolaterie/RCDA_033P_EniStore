@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 
+import static fr.eni.eni_store.service.ServiceConstants.*;
+
 @Service
 public class AuthService {
 
@@ -51,7 +53,7 @@ public class AuthService {
 
         // Tester que l'user existe en base
         if (loggedUser == null) {
-            return ServiceHelper.buildResponse("765", "Couple email/mot de passe incorrect");
+            return ServiceHelper.buildResponse(CD_ERR_AUTH, "Couple email/mot de passe incorrect");
         }
 
         Date tokenLifetime = new Date(System.currentTimeMillis() + ((1000 * 60 * 60) * 1));
@@ -66,18 +68,18 @@ public class AuthService {
                 .compact();
 
         // Retourner succès
-        return ServiceHelper.buildResponse("200", "Authentifié(e) avec succès", token);
+        return ServiceHelper.buildResponse(CD_SUCCESS_COMMON, "Authentifié(e) avec succès", token);
     }
 
     public ServiceResponse<Boolean> checkToken(String token){
         // Error: 1 - Si Empty
         if (token.isEmpty()){
-            return ServiceHelper.buildResponse("704", "Token vide", false);
+            return ServiceHelper.buildResponse(CD_ERR_INVALID, "Token vide", false);
         }
 
         // Si token trop court (pas possible de substring 7 sinon crash)
         if (token.length() < 7){
-            return ServiceHelper.buildResponse("704", "Token trop court", false);
+            return ServiceHelper.buildResponse(CD_ERR_INVALID, "Token trop court", false);
         }
 
         // ATTENTION SELON LE CAS LE TOKEN EST SUFFIXE D'UN DISCRIMINANT
@@ -105,17 +107,17 @@ public class AuthService {
             // Si la date d'expiration est depassé alors
             // Si exception jwt de type expiration
             if (e instanceof ExpiredJwtException){
-                return ServiceHelper.buildResponse("704", "Token expiré", false);
+                return ServiceHelper.buildResponse(CD_ERR_INVALID, "Token expiré", false);
             }
 
             // Si token malformé
             if (e instanceof MalformedJwtException){
-                return ServiceHelper.buildResponse("704", "Token malformé", false);
+                return ServiceHelper.buildResponse(CD_ERR_INVALID, "Token malformé", false);
             }
 
-            return ServiceHelper.buildResponse("704", "Erreur inconnue", false);
+            return ServiceHelper.buildResponse(CD_ERR_INVALID, "Erreur inconnue", false);
         }
 
-        return ServiceHelper.buildResponse("202", "Token valide", true);
+        return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, "Token valide", true);
     }
 }

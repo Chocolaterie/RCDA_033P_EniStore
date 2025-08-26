@@ -13,6 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static fr.eni.eni_store.service.ServiceConstants.CD_SUCCESS_DEFAULT;
+
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -37,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             ServiceResponse<Boolean> serviceResponse = authService.checkToken(token);
 
             // Si pas bon (!= 202 code métier)
-            if (!serviceResponse.code.equals("202")) {
+            if (!serviceResponse.code.equals(CD_SUCCESS_DEFAULT)) {
                 // Forcer la réponse http à être en JSON
                 response.setContentType("application/json");
 

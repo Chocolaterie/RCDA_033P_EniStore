@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static fr.eni.eni_store.service.ServiceConstants.*;
+
 @Service
 public class ArticleService {
 
@@ -24,7 +26,7 @@ public class ArticleService {
 
     public ServiceResponse<List<Article>> getAll(){
         // Cas 1
-        return ServiceHelper.buildResponse("202", localeHelper.i18n("Service_Article_GetAll_202"), articleDAO.selectAll());
+        return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_GetAll_202"), articleDAO.selectAll());
     }
 
     public ServiceResponse<Article> getById(String id){
@@ -33,11 +35,11 @@ public class ArticleService {
 
         // Cas : Je trouve pas l'id
         if (article == null){
-            return ServiceHelper.buildResponse("703", localeHelper.i18n("Service_Article_GetById_703"));
+            return ServiceHelper.buildResponse(CD_ERR_NOT_FOUND, localeHelper.i18n("Service_Article_GetById_703"));
         }
 
         // Cas : Ok
-        return ServiceHelper.buildResponse("202", localeHelper.i18n("Service_Article_GetById_202"), article);
+        return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_GetById_202"), article);
     }
 
     public ServiceResponse<Article> deleteById(String id){
@@ -46,11 +48,11 @@ public class ArticleService {
 
         // Cas : Je trouve pas l'id/article non supprimé
         if (!removeSuccess){
-            return ServiceHelper.buildResponse("703", localeHelper.i18n("Service_Article_Delete_703"));
+            return ServiceHelper.buildResponse(CD_ERR_NOT_FOUND, localeHelper.i18n("Service_Article_Delete_703"));
         }
 
         // Cas : Ok
-        return ServiceHelper.buildResponse("202", localeHelper.i18n("Service_Article_Delete_202"));
+        return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_Delete_202"));
     }
 
     public ServiceResponse<Article> save(Article article){
@@ -59,9 +61,9 @@ public class ArticleService {
         DAOSaveResult<Article> daoSaveResult = articleDAO.save(article);
 
         if (daoSaveResult.isCreated){
-            return ServiceHelper.buildResponse("202", localeHelper.i18n("Service_Article_Save_202"), daoSaveResult.data);
+            return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_Save_202"), daoSaveResult.data);
         }
 
-        return ServiceHelper.buildResponse("203", localeHelper.i18n("Service_Article_Save_203"), daoSaveResult.data);
+        return ServiceHelper.buildResponse(CD_SUCCESS_PERSIST, localeHelper.i18n("Service_Article_Save_203"), daoSaveResult.data);
     }
 }

@@ -2,8 +2,12 @@ package fr.eni.eni_store.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.eni.eni_store.bo.AppUser;
+import fr.eni.eni_store.dao.IDAOAuth;
 import fr.eni.eni_store.service.AuthService;
 import fr.eni.eni_store.service.ServiceResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,10 +28,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
     private final AuthService authService;
+    private final IDAOAuth daoAuth;
 
-    public JwtAuthFilter(ObjectMapper objectMapper, AuthService authService) {
+    public JwtAuthFilter(ObjectMapper objectMapper, AuthService authService, IDAOAuth daoAuth) {
         this.objectMapper = objectMapper;
         this.authService = authService;
+        this.daoAuth = daoAuth;
     }
 
     @Override
@@ -57,11 +63,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             Authentication securityContext = SecurityContextHolder.getContext().getAuthentication();
             if (securityContext.getPrincipal().equals("anonymousUser")) {
                 // Récupérer un vrai USER (Service/DAO)
+                // Récupérer par l'email  pourquoi ? Car le token contient que l'email de l'user
+                // Option 3 (Lecture plus facile) : Un helper qui récupère le mail d'un token
+                token = token.substring(7);
+                String email = authService.getEmailFromToken(token);
 
-                // Comment retrouver/instancier mon AppUser qui est un UserDetails
+                // A jour : Un user récupéré depuis la DAO (AppUser qui est un UserDetails)
+                AppUser loggedUser = daoAuth.selectUserByEmail(email);
+
+                // AVANT : (Un user instancié) : Comment retrouver/instancier mon AppUser qui est un UserDetails
+                /*
                 AppUser loggedUser = new AppUser();
                 loggedUser.email = "kfd@gmail.com";
                 loggedUser.password = "dfsdfsdfsdf";
+                */
 
                 // Encapsuler notre user dans un token spring
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

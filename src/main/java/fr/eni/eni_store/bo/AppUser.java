@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -19,9 +20,24 @@ public class AppUser implements UserDetails {
     public String email;
     public String password;
 
+    /**
+     * ex: roles
+     * = "ROLE_ADMIN", "ROLE_USER"
+     * = "ROLE_USER"
+     */
+    public List<String> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        for (String role : roles){
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+
+        return authorities;
+        // Avant
+        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     @Override

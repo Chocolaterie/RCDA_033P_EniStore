@@ -4,6 +4,7 @@ import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.service.ArticleService;
 import fr.eni.eni_store.service.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class ArticleRestController {
         this.articleService = articleService;
     }
 
+    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Endpoint pour récupérer tout les articles")
     @GetMapping("all")
     public ServiceResponse<List<Article>> getAll(){

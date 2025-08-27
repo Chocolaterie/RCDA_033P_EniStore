@@ -10,6 +10,11 @@ import java.util.List;
 
 import static fr.eni.eni_store.service.ServiceConstants.*;
 
+/**
+ * Service applicatif pour la gestion des {@link Article}.
+ * Centralise la logique métier et renvoie des {@link ServiceResponse}
+ * avec codes et messages localisés.
+ */
 @Service
 public class ArticleService {
 
@@ -23,14 +28,28 @@ public class ArticleService {
     }
 
     /**
-     * Fonctionnalité pour récupérer tout les articles
-     * @return 202 : Succès
+     * Récupère l’ensemble des articles.
+     *
+     * @return
+     * <ul>
+     *   <li><b>202 (CD_SUCCESS_DEFAULT)</b> : succès, liste potentiellement vide mais requête traitée.</li>
+     * </ul>
      */
     public ServiceResponse<List<Article>> getAll(){
         // Cas 1
         return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_GetAll_202"), articleDAO.selectAll());
     }
 
+    /**
+     * Récupère un article par son identifiant.
+     *
+     * @param id identifiant unique de l’article
+     * @return
+     * <ul>
+     *   <li><b>703 (CD_ERR_NOT_FOUND)</b> : article introuvable pour l’id fourni.</li>
+     *   <li><b>202 (CD_SUCCESS_DEFAULT)</b> : succès, article trouvé et retourné.</li>
+     * </ul>
+     */
     public ServiceResponse<Article> getById(String id){
         // Essayer de récupérer l'article
         Article article = articleDAO.selectById(id);
@@ -44,6 +63,16 @@ public class ArticleService {
         return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_GetById_202"), article);
     }
 
+    /**
+     * Supprime un article par son identifiant.
+     *
+     * @param id identifiant unique de l’article
+     * @return
+     * <ul>
+     *   <li><b>703 (CD_ERR_NOT_FOUND)</b> : article introuvable ou non supprimé.</li>
+     *   <li><b>202 (CD_SUCCESS_DEFAULT)</b> : succès, article supprimé.</li>
+     * </ul>
+     */
     public ServiceResponse<Article> deleteById(String id){
         // Essayer de récupérer l'article
         boolean removeSuccess = articleDAO.deleteById(id);
@@ -57,6 +86,17 @@ public class ArticleService {
         return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_Delete_202"));
     }
 
+    /**
+     * Crée ou met à jour un article.
+     * L’implémentation DAO décide création vs mise à jour selon la présence/valeur de l’identifiant.
+     *
+     * @param article article à créer ou à mettre à jour
+     * @return
+     * <ul>
+     *   <li><b>202 (CD_SUCCESS_DEFAULT)</b> : succès, article créé.</li>
+     *   <li><b>203 (CD_SUCCESS_PERSIST)</b> : succès, article mis à jour (persisté).</li>
+     * </ul>
+     */
     public ServiceResponse<Article> save(Article article){
 
         // J'ai une seule DAO (qui fait create ou update selon l'id)

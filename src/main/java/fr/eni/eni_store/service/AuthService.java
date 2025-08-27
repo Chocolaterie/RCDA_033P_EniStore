@@ -14,6 +14,11 @@ import java.util.Date;
 
 import static fr.eni.eni_store.service.ServiceConstants.*;
 
+/**
+ * Service d’authentification basé sur JWT (stateless).
+ * Permet de vérifier les identifiants de connexion, de générer un token JWT,
+ * et de valider un token existant.
+ */
 @Service
 public class AuthService {
 
@@ -24,14 +29,16 @@ public class AuthService {
     }
 
     /**
-     * Récupérer la valeur de app.jwt.secret dans application.properties
+     * Clé secrète récupérée dans le fichier application.properties (propriété : app.jwt.secret).
+     * Utilisée pour signer et vérifier les tokens JWT.
      */
     @Value("${app.jwt.secret}")
     private String SECRET_KEY;
 
     /**
-     * Récupérer la clé Key (binaire) depuis la clé secrète String
-     * @return
+     * Convertit la clé secrète (chaîne Base64) en un objet {@link Key}.
+     *
+     * @return la clé secrète convertie en {@link Key}
      */
     private Key getSecretKey() {
         // convertir un string en base 64
@@ -43,9 +50,15 @@ public class AuthService {
     }
 
     /**
-     * Fonctionnalité pour authentifier user en Stateless (token jwt)
-     * @param loginRequest
+     * Authentifie un utilisateur en vérifiant son email et son mot de passe,
+     * puis génère un token JWT valide pour une durée d’une heure.
+     *
+     * @param loginRequest les identifiants de connexion (email + mot de passe)
      * @return
+     * <ul>
+     *   <li><b>401 (CD_ERR_AUTH)</b> : couple email/mot de passe incorrect.</li>
+     *   <li><b>200 (CD_SUCCESS_COMMON)</b> : succès, utilisateur authentifié et token généré.</li>
+     * </ul>
      */
     public ServiceResponse<String> auth(LoginRequest loginRequest) {
         // Je récupère le user en base
@@ -71,6 +84,16 @@ public class AuthService {
         return ServiceHelper.buildResponse(CD_SUCCESS_COMMON, "Authentifié(e) avec succès", token);
     }
 
+    /**
+     * Vérifie la validité d’un token JWT (format, signature, expiration).
+     *
+     * @param token le token à vérifier (doit commencer par "Bearer ")
+     * @return
+     * <ul>
+     *   <li><b>400 (CD_ERR_INVALID)</b> : token vide, trop court, expiré, malformé ou erreur inconnue.</li>
+     *   <li><b>202 (CD_SUCCESS_DEFAULT)</b> : succès, token valide.</li>
+     * </ul>
+     */
     public ServiceResponse<Boolean> checkToken(String token){
         // Error: 1 - Si Empty
         if (token.isEmpty()){

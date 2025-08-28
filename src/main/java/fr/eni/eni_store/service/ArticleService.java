@@ -1,5 +1,6 @@
 package fr.eni.eni_store.service;
 
+import fr.eni.eni_store.annotation.HelloWorld;
 import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.dao.DAOSaveResult;
 import fr.eni.eni_store.dao.IDAOArticle;
@@ -38,6 +39,7 @@ public class ArticleService {
      *   <li><b>202 (CD_SUCCESS_DEFAULT)</b> : succès, liste potentiellement vide mais requête traitée.</li>
      * </ul>
      */
+    @HelloWorld(message = "Chocolatine")
     public ServiceResponse<List<Article>> getAll(){
         // Cas 1
         return ServiceHelper.buildResponse(CD_SUCCESS_DEFAULT, localeHelper.i18n("Service_Article_GetAll_202"), articleDAO.selectAll());

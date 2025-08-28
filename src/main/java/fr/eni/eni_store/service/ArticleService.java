@@ -4,7 +4,9 @@ import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.dao.DAOSaveResult;
 import fr.eni.eni_store.dao.IDAOArticle;
 import fr.eni.eni_store.locale.LocaleHelper;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ import static fr.eni.eni_store.service.ServiceConstants.*;
  * avec codes et messages localisés.
  */
 @Service
+@Validated
 public class ArticleService {
 
     private final IDAOArticle articleDAO;
@@ -97,7 +100,7 @@ public class ArticleService {
      *   <li><b>203 (CD_SUCCESS_PERSIST)</b> : succès, article mis à jour (persisté).</li>
      * </ul>
      */
-    public ServiceResponse<Article> save(Article article){
+    public ServiceResponse<Article> save(@Valid Article article){
 
         // J'ai une seule DAO (qui fait create ou update selon l'id)
         DAOSaveResult<Article> daoSaveResult = articleDAO.save(article);

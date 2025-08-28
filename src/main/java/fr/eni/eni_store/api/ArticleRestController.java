@@ -4,6 +4,7 @@ import fr.eni.eni_store.bo.Article;
 import fr.eni.eni_store.service.ArticleService;
 import fr.eni.eni_store.service.ServiceResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
